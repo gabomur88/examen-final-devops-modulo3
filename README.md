@@ -315,11 +315,32 @@ Este resultado confirma la ejecución satisfactoria de las validaciones CI. No e
 | Pruebas unitarias | 2 pruebas exitosas |
 | Terraform init y validate | Exitosos |
 | Terraform plan | 5 recursos previstos |
+| Terraform apply | 5 recursos creados en AWS |
 | Ansible syntax-check | Exitoso |
+| Ansible Deploy | ok=11, changed=10, failed=0 |
+| API principal `/` | HTTP 200 OK |
+| Endpoint `/health` | HTTP 200 OK |
+| Idempotencia Ansible | ok=10, changed=0, failed=0 |
 | Jenkins Docker | Contenedor funcionando |
 | Jenkins Pipeline #1 | SUCCESS |
-| Despliegue AWS del examen | Pendiente de ejecución |
-| Despliegue Ansible en EC2 | Pendiente de ejecución |
+| Terraform destroy | 5 recursos eliminados |
+| Estado Terraform final | Sin recursos |
+
+### Resultado del despliegue
+
+El 16 de noviembre de 2026 se desplegó exitosamente
+una API REST Flask en AWS EC2 t3.micro, región us-east-2.
+
+Terraform aprovisionó la infraestructura y Ansible
+instaló las dependencias y configuró el servicio systemd.
+
+Ambos endpoints respondieron HTTP 200 OK.
+
+La segunda ejecución de Ansible confirmó idempotencia,
+con changed=0 y failed=0.
+
+Al finalizar las pruebas, se ejecutó Terraform destroy
+para eliminar los cinco recursos creados.
 
 ## 13. Repositorio
 

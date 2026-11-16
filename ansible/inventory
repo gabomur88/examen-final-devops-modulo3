@@ -1,2 +1,3 @@
 [web]
-# La IP publica de EC2 se colocara despues del despliegue
+# Agregar aquí la IP pública de EC2 antes del despliegue.
+# Configurar ansible_user y la ruta del PEM local.
