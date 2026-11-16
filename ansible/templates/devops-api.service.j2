@@ -1,0 +1,14 @@
+[Unit]
+Description=API Flask - Examen DevOps Educomser
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/opt/devops-api
+ExecStart=/opt/devops-api/venv/bin/python /opt/devops-api/main.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

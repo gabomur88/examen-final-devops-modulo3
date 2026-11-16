@@ -1,0 +1,72 @@
+---
+- name: Desplegar API Flask en EC2
+  hosts: web
+  become: true
+
+  tasks:
+    - name: Instalar Python y herramientas
+      ansible.builtin.apt:
+        name:
+          - python3
+          - python3-venv
+          - python3-pip
+        update_cache: true
+        state: present
+
+    - name: Crear directorio de la aplicacion
+      ansible.builtin.file:
+        path: /opt/devops-api
+        state: directory
+        mode: "0755"
+
+    - name: Copiar aplicacion Python
+      ansible.builtin.copy:
+        src: ../app/main.py
+        dest: /opt/devops-api/main.py
+        mode: "0644"
+      notify: Reiniciar API
+
+    - name: Copiar dependencias
+      ansible.builtin.copy:
+        src: ../app/requirements.txt
+        dest: /opt/devops-api/requirements.txt
+        mode: "0644"
+
+    - name: Crear entorno virtual Python
+      ansible.builtin.command:
+        cmd: python3 -m venv /opt/devops-api/venv
+        creates: /opt/devops-api/venv/bin/python     
+
+    - name: Instalar dependencias
+      ansible.builtin.pip:
+        requirements: /opt/devops-api/requirements.txt
+        virtualenv: /opt/devops-api/venv
+      notify: Reiniciar API
+
+    - name: Asignar propiedad de la aplicacion
+      ansible.builtin.file:
+        path: /opt/devops-api
+        owner: ubuntu
+        group: ubuntu
+        recurse: true
+
+    - name: Instalar servicio systemd
+      ansible.builtin.template:
+        src: templates/devops-api.service.j2
+        dest: /etc/systemd/system/devops-api.service
+        mode: "0644"
+      notify: Reiniciar API
+
+    - name: Habilitar e iniciar API Flask
+      ansible.builtin.systemd_service:
+        name: devops-api
+        enabled: true
+        state: started
+        daemon_reload: true
+
+  handlers:
+    - name: Reiniciar API
+      ansible.builtin.systemd_service:
+        name: devops-api
+        state: restarted
+        daemon_reload: true

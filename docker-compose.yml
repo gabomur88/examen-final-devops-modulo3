@@ -1,0 +1,19 @@
+services:
+  jenkins:
+    build:
+      context: .
+      dockerfile: jenkins/Dockerfile
+
+    container_name: examen-devops-jenkins
+
+    ports:
+      - "127.0.0.1:8083:8080"
+      - "127.0.0.1:50003:50000"
+
+    volumes:
+      - jenkins_examen_home:/var/jenkins_home
+
+    restart: unless-stopped
+
+volumes:
+  jenkins_examen_home:
